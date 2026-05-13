@@ -28,7 +28,7 @@ export default function LoginScreen() {
           </Text>
         </View>
 
-        <View className="rounded-[32px] border border-slate-200 bg-white p-6 gap-4 shadow-sm">
+        <View className="rounded-[32px] border border-slate-200 bg-white p-6 gap-4 ">
           <View className="gap-1.5">
             <Text className="text-lg font-bold text-slate-950">Sign in</Text>
             <Text className="text-sm text-slate-500">

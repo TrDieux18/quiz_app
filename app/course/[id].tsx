@@ -143,7 +143,7 @@ export default function CourseDetailScreen() {
                 backgroundColor: surface,
                 borderColor: border,
               }}
-              className="rounded-2xl border overflow-hidden shadow-sm"
+              className="rounded-2xl border overflow-hidden "
             >
               {currentCourse.teachers.map((teacher, index) => {
                 const initials =
@@ -228,7 +228,7 @@ export default function CourseDetailScreen() {
                 backgroundColor: surface,
                 borderColor: border,
               }}
-              className="mb-4 rounded-2xl border overflow-hidden shadow-sm"
+              className="mb-4 rounded-2xl border overflow-hidden"
             >
               <View
                 style={{
@@ -242,7 +242,7 @@ export default function CourseDetailScreen() {
                 </Text>
               </View>
 
-              <View className="p-2 space-y-1">
+              <View className="p-2 gap-y-1">
                 {section.modules.length > 0 ? (
                   section.modules.map((module) => {
                     const iconInfo = getModuleIcon(module.modname);

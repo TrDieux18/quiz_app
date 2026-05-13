@@ -16,7 +16,7 @@ export function Card({ children, className }: CardProps) {
         backgroundColor: surface,
         borderColor: border,
       }}
-      className={cn("border rounded-2xl p-4 shadow-sm", className)}
+      className={cn("border rounded-2xl p-4 ", className)}
     >
       {children}
     </View>

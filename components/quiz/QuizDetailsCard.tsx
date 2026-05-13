@@ -22,7 +22,7 @@ export function QuizDetailsCard({
   gradeValue,
 }: QuizDetailsCardProps) {
   return (
-    <View className="mx-6 mt-4 bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+    <View className="mx-6 mt-4 bg-white rounded-2xl border border-slate-100  overflow-hidden">
       <View className="px-5 pt-4 pb-2">
         <Text className="text-base font-bold text-slate-900 mb-1">
           {"Details"}

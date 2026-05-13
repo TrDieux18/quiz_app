@@ -130,7 +130,7 @@ export default function QuizAttemptScreen() {
               backgroundColor: themeColors.surface,
               borderColor: themeColors.border,
             }}
-            className="rounded-3xl p-8 w-full items-center shadow-sm border"
+            className="rounded-3xl p-8 w-full items-center  border"
           >
             <View
               style={{ backgroundColor: themeColors.successBackground }}
@@ -314,7 +314,7 @@ export default function QuizAttemptScreen() {
                     ? themeColors.textDisabled
                     : themeColors.primary,
                 }}
-                className="py-4 rounded-2xl items-center justify-center flex-row shadow-sm"
+                className="py-4 rounded-2xl items-center justify-center flex-row "
               >
                 {submitting ? (
                   <ActivityIndicator size="small" color="#fff" />

@@ -45,7 +45,7 @@ function QuestionCardComponent({
       style={{
         borderColor: border,
       }}
-      className="mx-6 mb-4 rounded-2xl border shadow-sm overflow-hidden"
+      className="mx-6 mb-4 rounded-2xl border  overflow-hidden"
     >
       {/* question header */}
       <View

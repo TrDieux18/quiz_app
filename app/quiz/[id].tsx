@@ -88,7 +88,7 @@ export default function QuizDetailScreen() {
           <Pressable
             onPress={handleStartQuiz}
             className={cn(
-              "bg-slate-900 py-4 rounded-2xl items-center justify-center flex-row shadow-sm active:bg-indigo-600",
+              "bg-slate-900 py-4 rounded-2xl items-center justify-center flex-row  active:bg-indigo-600",
             )}
           >
             <Text className="text-white font-bold text-base ml-2">Start</Text>
