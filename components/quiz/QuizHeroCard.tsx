@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 
-import type { Quiz } from "@/store/quiz.store";
+import type { Quiz } from "@/types/quiz.types";
 import { formatDuration, stripHtml } from "@/utils/format";
 
 type QuizHeroCardProps = {

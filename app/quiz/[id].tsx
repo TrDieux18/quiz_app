@@ -1,11 +1,11 @@
 import { QuizDetailsCard } from "@/components/quiz/QuizDetailsCard";
 import { QuizHeroCard } from "@/components/quiz/QuizHeroCard";
-import { useQuizStore } from "@/store/quiz.store";
+import { useQuizQuery } from "@/hooks/use-quiz";
 import { cn } from "@/utils/cn";
 import { decimalToNumber } from "@/utils/decimal";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import {
   ActivityIndicator,
   Pressable,
@@ -15,12 +15,8 @@ import {
 } from "react-native";
 
 export default function QuizDetailScreen() {
-  const { id } = useLocalSearchParams();
-  const { getQuiz, quiz, loading } = useQuizStore();
-
-  useEffect(() => {
-    if (id) getQuiz(id as string);
-  }, [id]);
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const { data: quiz, isLoading: loading } = useQuizQuery(id as string);
 
   const handleStartQuiz = useCallback(() => {
     router.push({

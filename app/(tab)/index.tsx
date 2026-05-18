@@ -1,11 +1,11 @@
 import CourseCard from "@/components/course";
 import { HelloWave } from "@/components/hello-wave";
 import { Colors } from "@/constants/theme";
+import { useCoursesQuery } from "@/hooks/use-course";
 import { useAuthStore } from "@/store/auth.store";
-import { useCourseStore } from "@/store/course.store";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   ActivityIndicator,
   ScrollView,
@@ -24,7 +24,7 @@ function getInitials(firstname?: string, lastname?: string) {
 
 export default function HomeScreen() {
   const { user } = useAuthStore();
-  const { loading, courses, getCourse } = useCourseStore();
+  const { data: courses = [], isLoading: loading } = useCoursesQuery();
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredCourses = courses.filter(
@@ -33,7 +33,6 @@ export default function HomeScreen() {
       course.shortname.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  // Use light theme colors explicitly
   const themeColors = Colors.light;
   const {
     background,
@@ -45,10 +44,6 @@ export default function HomeScreen() {
     icon,
     primary,
   } = themeColors;
-
-  useEffect(() => {
-    getCourse();
-  }, []);
 
   const avatarUri = user?.picture?.startsWith("http") ? user.picture : null;
   const initials = getInitials(user?.firstname, user?.lastname) || "U";

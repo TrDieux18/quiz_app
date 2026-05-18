@@ -1,5 +1,5 @@
 import { Colors } from "@/constants/theme";
-import type { Question } from "@/store/quiz.store";
+import type { Question } from "@/types/quiz.types";
 import { stripHtml } from "@/utils/format";
 import { Ionicons } from "@expo/vector-icons";
 import { memo, useCallback } from "react";

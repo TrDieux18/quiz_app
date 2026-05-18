@@ -1,5 +1,5 @@
 import { Colors } from "@/constants/theme";
-import { Course } from "@/store/course.store";
+import { Course } from "@/types/course.types";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { Pressable, Text, View } from "react-native";

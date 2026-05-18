@@ -1,4 +1,4 @@
-import type { SerializedDecimal } from "@/store/quiz.store";
+import type { SerializedDecimal } from "@/types/quiz.types";
 
 /** Convert Prisma serialized Decimal {s, e, d} to a JS number */
 export function decimalToNumber(
@@ -19,7 +19,6 @@ export function decimalToNumber(
   return Number(val);
 }
 
-/** Format decimal/number as score display (2 decimal places) */
 export function formatScore(
   val: SerializedDecimal | number | null | undefined,
 ): string {

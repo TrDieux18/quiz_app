@@ -7,10 +7,16 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Colors } from "@/constants/theme";
-import { useQuizStore } from "@/store/quiz.store";
+import {
+  SubmitQuizParams,
+  useStartQuizMutation,
+  useSubmitQuizMutation,
+} from "@/hooks/use-quiz";
+import { AttemptData, SubmitResult } from "@/types/quiz.types";
 import { formatScore } from "@/utils/decimal";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
+import { useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -22,21 +28,20 @@ import {
 } from "react-native";
 
 export default function QuizAttemptScreen() {
-  const route = useRoute<any>();
+  const { id } = useLocalSearchParams<{ id: string }>();
   const navigation = useNavigation<any>();
-  const id = route.params?.id;
 
-  const {
-    attempt,
-    selectedAnswers,
-    submitting,
-    submitResult,
-    loading,
-    startQuiz,
-    selectAnswer,
-    submitQuiz,
-    resetAttempt,
-  } = useQuizStore();
+  const { mutate: startQuiz, isPending: loading } = useStartQuizMutation();
+  const { mutate: submitQuizMutation, isPending: submitting } =
+    useSubmitQuizMutation();
+
+  const [attempt, setAttempt] = useState<AttemptData | null>(null);
+
+  const [selectedAnswers, setSelectedAnswers] = useState<
+    Record<string, string>
+  >({});
+
+  const [submitResult, setSubmitResult] = useState<SubmitResult | null>(null);
 
   const themeColors = Colors.light;
 
@@ -60,21 +65,30 @@ export default function QuizAttemptScreen() {
     setConfirmDialog({ visible: false, message: "" });
   }, []);
 
+  const selectAnswer = useCallback((slot: string, answerId: string) => {
+    setSelectedAnswers((prev) => ({ ...prev, [slot]: answerId }));
+  }, []);
+
+  const resetAttempt = useCallback(() => {
+    setAttempt(null);
+    setSelectedAnswers({});
+    setSubmitResult(null);
+  }, []);
+
   useEffect(() => {
     if (id && !hasStarted.current) {
       hasStarted.current = true;
-      startQuiz(id as string).catch((err) => {
-        Alert.alert("Error", err?.response?.data?.message || err.message);
-        if (navigation.canGoBack()) navigation.goBack();
+      startQuiz(id as string, {
+        onSuccess: (data) => {
+          setAttempt(data);
+        },
+        onError: (err: any) => {
+          Alert.alert("Error", err?.response?.data?.message || err.message);
+          if (navigation.canGoBack()) navigation.goBack();
+        },
       });
     }
   }, [id, navigation, startQuiz]);
-
-  useEffect(() => {
-    return () => {
-      resetAttempt();
-    };
-  }, [resetAttempt]);
 
   const questions = attempt?.questions.filter((q) => q.question !== null) ?? [];
   const totalQuestions = questions.length;
@@ -84,18 +98,36 @@ export default function QuizAttemptScreen() {
 
   const performSubmit = useCallback(
     (submitQuizId: string) => {
-      if (!submitQuizId) {
-        Alert.alert("Error", "Quiz ID not found");
+      if (!submitQuizId || !attempt) {
+        Alert.alert("Error", "Quiz ID or attempt not found");
         return;
       }
-      submitQuiz(submitQuizId).catch((err) => {
-        Alert.alert(
-          "Submission Error",
-          err?.response?.data?.message || err.message,
-        );
+      const answers = Object.entries(selectedAnswers).map(
+        ([slot, answerId]) => ({
+          slot: Number(slot),
+          answerId: Number(answerId),
+        }),
+      );
+
+      const payload: SubmitQuizParams = {
+        quizId: submitQuizId,
+        attemptNumber: attempt.attemptNumber,
+        answers,
+      };
+
+      submitQuizMutation(payload, {
+        onSuccess: (data) => {
+          setSubmitResult(data);
+        },
+        onError: (err: any) => {
+          Alert.alert(
+            "Submission Error",
+            err?.response?.data?.message || err.message,
+          );
+        },
       });
     },
-    [submitQuiz],
+    [attempt, selectedAnswers, submitQuizMutation],
   );
 
   const handleSubmit = useCallback(() => {
@@ -211,7 +243,6 @@ export default function QuizAttemptScreen() {
           </View>
         </View>
       ) : loading || !attempt ? (
-        // 2. MÀN HÌNH LOADING
         <View
           style={{ backgroundColor: themeColors.surface }}
           className="flex-1 justify-center items-center"
@@ -329,7 +360,6 @@ export default function QuizAttemptScreen() {
         </View>
       )}
 
-      {/* 4. DIALOG LUÔN Ở NGOÀI CÙNG */}
       <Dialog
         open={confirmDialog.visible}
         onOpenChange={hideConfirm}

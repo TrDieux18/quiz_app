@@ -24,7 +24,7 @@ export default function LoginScreen() {
             Welcome back
           </Text>
           <Text className="mt-3 max-w-[320px] text-base leading-6 text-slate-600">
-            Sign in to continue learning and keep your courses in one place.
+            Sign in to continue learning.
           </Text>
         </View>
 

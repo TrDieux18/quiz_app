@@ -1,15 +1,9 @@
 import { Colors } from "@/constants/theme";
-import { useCourseStore } from "@/store/course.store";
+import { useCourseDetailQuery } from "@/hooks/use-course";
+import { stripHtml } from "@/utils/format";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect } from "react";
-import {
-  ActivityIndicator,
-  Pressable,
-  ScrollView,
-  Text,
-  View,
-} from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 
 const getModuleIcon = (modname: string) => {
   const iconMap: Record<
@@ -37,8 +31,10 @@ const getModuleIcon = (modname: string) => {
 };
 
 export default function CourseDetailScreen() {
-  const { id } = useLocalSearchParams();
-  const { currentCourse, loading, getCourseDetail } = useCourseStore();
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const { data: currentCourse, isLoading: loading } = useCourseDetailQuery(
+    id as string | undefined,
+  );
 
   const themeColors = Colors.light;
   const {
@@ -57,19 +53,8 @@ export default function CourseDetailScreen() {
     icon,
   } = themeColors;
 
-  useEffect(() => {
-    if (id) getCourseDetail(id as string);
-  }, [id]);
-
   if (loading || !currentCourse) {
-    return (
-      <View
-        style={{ backgroundColor: surface }}
-        className="flex-1 justify-center items-center"
-      >
-        <ActivityIndicator size="large" color={text} />
-      </View>
-    );
+    return;
   }
 
   const getColorByClass = (colorClass: string): string => {
@@ -116,7 +101,7 @@ export default function CourseDetailScreen() {
         <View style={{ backgroundColor: surface }} className="p-6 mb-4">
           <Text
             style={{ color: textTertiary }}
-            className="text-sm font-medium mb-4"
+            className="text-sm font-semibold mb-4"
           >
             {currentCourse.shortname}
           </Text>
@@ -125,10 +110,12 @@ export default function CourseDetailScreen() {
 
           <Text
             style={{ color: textSecondary }}
-            className="leading-6 text-[15px]"
+            className="leading-6 font-medium text-[15px]"
           >
-            {currentCourse.summary?.replace(/<[^>]*>?/gm, "") ||
-              "No description provided for this course."}
+            {stripHtml(
+              currentCourse.summary ||
+                "No description provided for this course.",
+            )}
           </Text>
         </View>
 
@@ -257,6 +244,16 @@ export default function CourseDetailScreen() {
                           if (module.modname === "quiz") {
                             router.push({
                               pathname: "/quiz/[id]",
+                              params: { id: module.instance },
+                            });
+                          } else if (module.modname === "assign") {
+                            router.push({
+                              pathname: "/assignment/[id]",
+                              params: { id: module.instance },
+                            });
+                          } else if (module.modname === "url") {
+                            router.push({
+                              pathname: "/url/[id]",
                               params: { id: module.instance },
                             });
                           }

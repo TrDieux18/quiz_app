@@ -1,0 +1,21 @@
+export type User = {
+  id: number;
+  username: string;
+  email: string;
+  firstname: string;
+  lastname: string;
+  city: string;
+  country: string;
+  phone1: string;
+  phone2: string;
+  description: string;
+  descriptionformat: string;
+  idnumber: string;
+  calendartype: string;
+  auth: string;
+  confirmed: number;
+  timecreated: number;
+  timemodified: number;
+  imagealt: string;
+  picture: string;
+};

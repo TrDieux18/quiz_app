@@ -1,40 +1,25 @@
-import { api } from "@/services/api";
-import { useAuthStore } from "@/store/auth.store";
-import { storage } from "@/utils/storage";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 import "../global.css";
+import { useAuthStore } from "@/store/auth.store";
+
+const queryClient = new QueryClient();
 
 export default function RootLayout() {
   const [ready, setReady] = useState(false);
+  const { initAuth } = useAuthStore();
 
   useEffect(() => {
-    const init = async () => {
-      try {
-        const token = await storage.getToken();
-
-        if (token) {
-          const res = await api.get("/auth/me");
-
-          useAuthStore.setState({
-            user: res.data.user,
-          });
-        }
-      } catch (err) {
-        await storage.removeToken();
-        useAuthStore.setState({ user: null });
-      } finally {
-        setReady(true);
-      }
-    };
-
-    init();
+    initAuth().finally(() => setReady(true));
   }, []);
 
-  if (!ready) {
-    return <View className="flex-1 bg-white" />;
-  }
+  if (!ready) return <View className="flex-1 bg-white" />;
 
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Stack screenOptions={{ headerShown: false }} />
+    </QueryClientProvider>
+  );
 }
